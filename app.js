@@ -32,9 +32,9 @@ app.post('/', (req, res) => {
   console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
 
-    if (body && body.message) {
-        const senderId = body.senderId || 'unknown';
-        const messageText = body.message.text;
+    if (body.entry.changes.messages.text) {
+        const senderId = body.entry.changes.messages.from || 'unknown';
+        const messageText = body.entry.changes.messages.text;
 
         console.log(`Received message from ${senderId}: ${messageText}`);
 
