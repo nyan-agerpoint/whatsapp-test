@@ -13,6 +13,11 @@ app.use(express.json());
 const port = process.env.PORT || 3000;
 const verifyToken = process.env.VERIFY_TOKEN;
 
+const axios = require('axios');
+
+const WHATSAPP_API_URL = 'https://graph.facebook.com/v22.0/759822520538727/messages';
+const ACCESS_TOKEN = 'EAAOzeW8yTLkBPHNpZClenGNHFyWDd2YrVPiX4ZCn9NhgMz0EyjRpDIZAnetL2xxWs7FOggFBxTPzjKwQZBSUidJxEpMuhsncvKDoOJHvdlBCZCCxyqbSp09Tn9lKEDJbEcVtZB0PgjTns1yXy4jnQWtAVHKSRomQa28ZA6uL2b645OjWyYyT0wiDhy4Sp7nKtrxKwZDZD';
+
 // Route for GET requests
 app.get('/', (req, res) => {
   const { 'hub.mode': mode, 'hub.challenge': challenge, 'hub.verify_token': token } = req.query;
@@ -38,17 +43,34 @@ app.post('/', (req, res) => {
 
         console.log(`Received message from ${senderId}: ${message}`);
 
-        // Respond with a simple echo reply (you can replace this logic with AI or database lookup)
-        const reply = {
-            recipientId: senderId,
-            reply: `You said: ${message}`,
-        };
-
         console.log('Sending reply:', reply);
 
-        // In real applications, you would send the reply to the platform's API
-        res.status(200).json(reply);
-        res.status(200).end();
+        // Send reply back via WhatsApp API
+        try {
+            const response = await axios.post(
+                WHATSAPP_API_URL,
+                {
+                    messaging_product: 'whatsapp',
+                    to: senderId,
+                    type: 'text',
+                    text: {
+                        body: `You said: ${message}`// Respond with a simple echo reply (you can replace this logic with AI or database lookup)
+                    }
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${ACCESS_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            console.log('Message sent:', response.data);
+            res.sendStatus(200);
+        } catch (error) {
+            console.error('Error sending message:', error.response?.data || error.message);
+            res.sendStatus(500);
+        }
     } else {
         res.sendStatus(400);
     }
