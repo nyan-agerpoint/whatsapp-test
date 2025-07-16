@@ -1,37 +1,59 @@
-// Import Express.js
+Skip to content
+You said:
+write webhook node js code to have a chatbot
+ChatGPT said:
+Here’s a basic Node.js webhook implementation for a chatbot using Express. This structure is commonly used with messaging platforms like Facebook Messenger, WhatsApp Business API, or custom platforms.
+
+✅ Example: Basic Webhook for a Chatbot (Node.js + Express)
+📁 File: index.js
 const express = require('express');
+const bodyParser = require('body-parser');
 
-// Create an Express app
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+// Middleware to parse incoming JSON
+app.use(bodyParser.json());
 
-// Set port and verify_token
-const port = process.env.PORT || 3000;
-const verifyToken = process.env.VERIFY_TOKEN;
+// Webhook verification (optional, for platforms like Facebook)
+app.get('/webhook', (req, res) => {
+    const VERIFY_TOKEN = 'your_verify_token';
 
-// Route for GET requests
-app.get('/', (req, res) => {
-  const { 'hub.mode': mode, 'hub.challenge': challenge, 'hub.verify_token': token } = req.query;
+    const mode = req.query['hub.mode'];
+    const token = req.query['hub.verify_token'];
+    const challenge = req.query['hub.challenge'];
 
-  if (mode === 'subscribe' && token === verifyToken) {
-    console.log('WEBHOOK VERIFIED');
-    res.status(200).send(challenge);
-  } else {
-    res.status(403).end();
-  }
+    if (mode && token === VERIFY_TOKEN) {
+        console.log('WEBHOOK_VERIFIED');
+        res.status(200).send(challenge);
+    } else {
+        res.sendStatus(403);
+    }
 });
 
-// Route for POST requests
-app.post('/', (req, res) => {
-  const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
-  console.log(`\n\nWebhook received ${timestamp}\n`);
-  console.log(JSON.stringify(req.body, null, 2));
-  res.status(200).end();
+// Handle incoming messages
+app.post('/webhook', (req, res) => {
+    const body = req.body;
+
+    if (body && body.message) {
+        const senderId = body.senderId || 'unknown';
+        const messageText = body.message.text;
+
+        console.log(`Received message from ${senderId}: ${messageText}`);
+
+        // Respond with a simple echo reply (you can replace this logic with AI or database lookup)
+        const reply = {
+            recipientId: senderId,
+            reply: `You said: ${messageText}`,
+        };
+
+        console.log('Sending reply:', reply);
+
+        // In real applications, you would send the reply to the platform's API
+        res.status(200).json(reply);
+    } else {
+        res.sendStatus(400);
+    }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`\nListening on port ${port}\n`);
-});
+
