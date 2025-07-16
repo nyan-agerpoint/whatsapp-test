@@ -1,29 +1,31 @@
+
+
+// Import Express.js
 const express = require('express');
-const bodyParser = require('body-parser');
 
+// Create an Express app
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middleware to parse incoming JSON
-app.use(bodyParser.json());
+// Middleware to parse JSON bodies
+app.use(express.json());
 
-// Webhook verification (optional, for platforms like Facebook)
-app.get('/webhook', (req, res) => {
-    const VERIFY_TOKEN = 'your_verify_token';
+// Set port and verify_token
+const port = process.env.PORT || 3000;
+const verifyToken = process.env.VERIFY_TOKEN;
 
-    const mode = req.query['hub.mode'];
-    const token = req.query['hub.verify_token'];
-    const challenge = req.query['hub.challenge'];
+// Route for GET requests
+app.get('/', (req, res) => {
+  const { 'hub.mode': mode, 'hub.challenge': challenge, 'hub.verify_token': token } = req.query;
 
-    if (mode && token === VERIFY_TOKEN) {
-        console.log('WEBHOOK_VERIFIED');
-        res.status(200).send(challenge);
-    } else {
-        res.sendStatus(403);
-    }
+  if (mode === 'subscribe' && token === verifyToken) {
+    console.log('WEBHOOK VERIFIED');
+    res.status(200).send(challenge);
+  } else {
+    res.status(403).end();
+  }
 });
 
-// Handle incoming messages
+// Route for POST requests
 app.post('/webhook', (req, res) => {
     const body = req.body;
 
@@ -47,5 +49,12 @@ app.post('/webhook', (req, res) => {
         res.sendStatus(400);
     }
 });
+
+// Start the server
+app.listen(port, () => {
+  console.log(`\nListening on port ${port}\n`);
+});
+
+
 
 
