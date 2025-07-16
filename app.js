@@ -13,7 +13,7 @@ app.use(express.json());
 const port = process.env.PORT || 3000;
 const verifyToken = process.env.VERIFY_TOKEN;
 
-const axios = require('axios');
+// const axios = require('axios');
 
 // const WHATSAPP_API_URL = 'https://graph.facebook.com/v22.0/759822520538727/messages';
 // const ACCESS_TOKEN = 'EAAOzeW8yTLkBPHNpZClenGNHFyWDd2YrVPiX4ZCn9NhgMz0EyjRpDIZAnetL2xxWs7FOggFBxTPzjKwQZBSUidJxEpMuhsncvKDoOJHvdlBCZCCxyqbSp09Tn9lKEDJbEcVtZB0PgjTns1yXy4jnQWtAVHKSRomQa28ZA6uL2b645OjWyYyT0wiDhy4Sp7nKtrxKwZDZD';
