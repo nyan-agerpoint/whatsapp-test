@@ -46,31 +46,31 @@ app.post('/', (req, res) => {
       console.log('Sending reply:', reply);
 
       // Send reply back via WhatsApp API
-      try {
-          const response = axios.post(
-              WHATSAPP_API_URL,
-              {
-                  messaging_product: 'whatsapp',
-                  to: senderId,
-                  type: 'text',
-                  text: {
-                      body: `You said: ${message}`// Respond with a simple echo reply (you can replace this logic with AI or database lookup)
-                  }
-              },
-              {
-                  headers: {
-                      'Authorization': `Bearer ${ACCESS_TOKEN}`,
-                      'Content-Type': 'application/json'
-                  }
-              }
-          );
+      // try {
+      //     const response = axios.post(
+      //         WHATSAPP_API_URL,
+      //         {
+      //             messaging_product: 'whatsapp',
+      //             to: senderId,
+      //             type: 'text',
+      //             text: {
+      //                 body: `You said: ${message}`
+      //             }
+      //         },
+      //         {
+      //             headers: {
+      //                 'Authorization': `Bearer ${ACCESS_TOKEN}`,
+      //                 'Content-Type': 'application/json'
+      //             }
+      //         }
+      //     );
 
-          console.log('Message sent:', response.data);
-          res.sendStatus(200);
-      } catch (error) {
-          console.error('Error sending message:', error.response?.data || error.message);
-          res.sendStatus(500);
-      }
+      //     console.log('Message sent:', response.data);
+      //     res.sendStatus(200);
+      // } catch (error) {
+      //     console.error('Error sending message:', error.response?.data || error.message);
+      //     res.sendStatus(500);
+      // }
   } else {
       res.sendStatus(400);
   }
