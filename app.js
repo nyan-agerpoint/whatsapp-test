@@ -25,8 +25,9 @@ app.get('/', (req, res) => {
   }
 });
 
-// Route for POST requests
-app.post('/webhook', (req, res) => {
+
+// Handle incoming messages
+app.post('/', (req, res) => {
     const body = req.body;
 
     if (body && body.message) {
@@ -54,6 +55,7 @@ app.post('/webhook', (req, res) => {
 app.listen(port, () => {
   console.log(`\nListening on port ${port}\n`);
 });
+
 
 
 
