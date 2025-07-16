@@ -32,16 +32,16 @@ app.post('/', (req, res) => {
   console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
 
-    if (body.entry.changes.messages.text) {
-        const senderId = body.entry.changes.messages.from || 'unknown';
-        const messageText = body.entry.changes.messages.text;
+  const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.text?.body;
+    if (message) {
+        const senderId = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from || 'unknown';
 
-        console.log(`Received message from ${senderId}: ${messageText}`);
+        console.log(`Received message from ${senderId}: ${message}`);
 
         // Respond with a simple echo reply (you can replace this logic with AI or database lookup)
         const reply = {
             recipientId: senderId,
-            reply: `You said: ${messageText}`,
+            reply: `You said: ${message}`,
         };
 
         console.log('Sending reply:', reply);
