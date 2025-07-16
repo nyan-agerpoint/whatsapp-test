@@ -1,11 +1,3 @@
-Skip to content
-You said:
-write webhook node js code to have a chatbot
-ChatGPT said:
-Here’s a basic Node.js webhook implementation for a chatbot using Express. This structure is commonly used with messaging platforms like Facebook Messenger, WhatsApp Business API, or custom platforms.
-
-✅ Example: Basic Webhook for a Chatbot (Node.js + Express)
-📁 File: index.js
 const express = require('express');
 const bodyParser = require('body-parser');
 
