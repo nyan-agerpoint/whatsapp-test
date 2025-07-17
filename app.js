@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 
 
 // Handle incoming messages
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
   const body = req.body;
   const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
   console.log(`\n\nWebhook received ${timestamp}\n`);
@@ -52,7 +52,7 @@ app.post('/', (req, res) => {
       };
 
       try {
-          const response = fetch(WHATSAPP_API_URL, {
+          const response = await fetch(WHATSAPP_API_URL, {
               method: 'POST',
               headers: {
                   'Authorization': `Bearer ${ACCESS_TOKEN}`,
@@ -63,15 +63,15 @@ app.post('/', (req, res) => {
 
           console.log(`Response:, ${response}`);
 
-          // const data = response.json();
+          const data = await response.json();
 
-          // if (!response.ok) {
-          //     console.error('Error sending message:', data);
-          //     return res.sendStatus(500);
-          // }
+          if (!response.ok) {
+              console.error('Error sending message:', data);
+              return res.sendStatus(500);
+          }
 
-          // console.log('Message sent:', data);
-          // res.sendStatus(200);
+          console.log('Message sent:', data);
+          res.sendStatus(200);
           } catch (err) {
             console.error('Fetch error:', err);
             res.sendStatus(500);
