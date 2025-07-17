@@ -31,14 +31,13 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
   const body = req.body;
   const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
-  console.log('\n\nWebhook received ${timestamp}\n');
+  console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
 
   const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.text?.body;
   if (message) {
       const senderId = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from || 'unknown';
 
-      console.log('Sending reply:', reply);
       if (senderId && message) {
         console.log('Received WhatsApp message from ${senderId}: ${message}');
 
