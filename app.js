@@ -61,15 +61,17 @@ app.post('/', (req, res) => {
               body: JSON.stringify(payload),
           });
 
-          const data = response.json();
+          console.log(`Response:, ${response}`);
 
-          if (!response.ok) {
-              console.error('Error sending message:', data);
-              return res.sendStatus(500);
-          }
+          // const data = response.json();
 
-          console.log('Message sent:', data);
-          res.sendStatus(200);
+          // if (!response.ok) {
+          //     console.error('Error sending message:', data);
+          //     return res.sendStatus(500);
+          // }
+
+          // console.log('Message sent:', data);
+          // res.sendStatus(200);
           } catch (err) {
             console.error('Fetch error:', err);
             res.sendStatus(500);
