@@ -62,7 +62,7 @@ app.post('/', (req, res) => {
               body: JSON.stringify(payload),
           });
 
-          const data = await response.json();
+          const data = response.json();
 
           if (!response.ok) {
               console.error('Error sending message:', data);
