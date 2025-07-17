@@ -1,5 +1,6 @@
 // Import Express.js
 const express = require('express');
+const fetch = require('node-fetch'); // Only if you're using Node.js < 18
 
 // Create an Express app
 const app = express();
@@ -9,12 +10,12 @@ app.use(express.json());
 
 // Set port and verify_token
 const port = process.env.PORT || 3000;
-const verifyToken = process.env.VERIFY_TOKEN;
+const verifyToken = process.env.VERIFY_TOKEN || 'test_token';
 
-const WHATSAPP_API_URL = 'https://graph.facebook.com/v22.0/759822520538727/messages';
+const WHATSAPP_API_URL = 'https://graph.facebook.com/v22.0/760721917113358/messages';
 const ACCESS_TOKEN = 'EAAHgZCGiJQbkBPLVD2iRXWOdsaEeaQZCqwSuZCYveEEVTtSVcPvMAZAmzgyuImxUasaCWKpHm920k5yaOOZBUt3IJy37V352xViFgWUiVWfZA6ZAMutBUTW3aevLhcmZCSUjobd406RagS8ZBNFj2P5P3sEgVs3WGBbm2ZC0X9TSzP7sLJmY1cmUt6diiz3UcRT5H2oBaYPYMg5f7i6tX2btWzWWVlhH6zfGr7Gk4CZAOh5UuDk';
 
-// Route for GET requests
+// Route for GET requests (Webhook verification)
 app.get('/', (req, res) => {
   const { 'hub.mode': mode, 'hub.challenge': challenge, 'hub.verify_token': token } = req.query;
 
@@ -22,66 +23,61 @@ app.get('/', (req, res) => {
     console.log('WEBHOOK VERIFIED');
     res.status(200).send(challenge);
   } else {
-    res.status(403).end();
+    res.sendStatus(403);
   }
 });
 
-
 // Handle incoming messages
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
   const body = req.body;
   const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
-  console.log('\n\nWebhook received ${timestamp}\n');
+  console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
 
   const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.text?.body;
-  if (message) {
-      const senderId = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from || 'unknown';
+  const senderId = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from || 'unknown';
 
-      console.log('Sending reply:', reply);
-      if (senderId && message) {
-        console.log('Received WhatsApp message from ${senderId}: ${message}');
+  if (senderId && message) {
+    console.log(`Received WhatsApp message from ${senderId}: ${message}`);
 
-        // Respond with a simple echo reply (you can replace this logic with AI or database lookup)
-        const payload = {
-            messaging_product: 'whatsapp',
-            to: senderId,
-            type: 'text',
-            text: {
-                body: 'You said: ${message}',
-            },
-      };
+    const payload = {
+      messaging_product: 'whatsapp',
+      to: senderId,
+      type: 'text',
+      text: {
+        body: `You said: ${message}`,
+      },
+    };
 
-      try {
-          const response = fetch(WHATSAPP_API_URL, {
-              method: 'POST',
-              headers: {
-                  'Authorization': 'Bearer ${ACCESS_TOKEN}',
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(payload),
-          });
+    try {
+      const response = fetch(WHATSAPP_API_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${ACCESS_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-          const data = response.json();
+      const data = response.json();
 
-          if (!response.ok) {
-              console.error('Error sending message:', data);
-              return res.sendStatus(500);
-          }
-
-          console.log('Message sent:', data);
-          res.sendStatus(200);
-      } catch (err) {
-          console.error('Fetch error:', err);
-          res.sendStatus(500);
+      if (!response.ok) {
+        console.error('Error sending message:', data);
+        return res.sendStatus(500);
       }
-    } else {
-        res.sendStatus(400);
+
+      console.log('Message sent:', data);
+      res.sendStatus(200);
+    } catch (err) {
+      console.error('Fetch error:', err);
+      res.sendStatus(500);
     }
-}
+  } else {
+    res.sendStatus(400);
+  }
+});
 
 // Start the server
 app.listen(port, () => {
-  console.log('\nListening on port ${port}\n');
+  console.log(`\nListening on port ${port}\n`);
 });
-
