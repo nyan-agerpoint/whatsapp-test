@@ -75,10 +75,10 @@ app.post('/', (req, res) => {
           console.error('Fetch error:', err);
           res.sendStatus(500);
       }
-  } else {
-      res.sendStatus(400);
-  }
-});
+    } else {
+        res.sendStatus(400);
+    }
+}
 
 // Start the server
 app.listen(port, () => {
