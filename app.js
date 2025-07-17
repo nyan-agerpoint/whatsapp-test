@@ -53,7 +53,7 @@ app.post('/', (req, res) => {
       };
 
       try {
-          const response = await fetch(WHATSAPP_API_URL, {
+          const response = fetch(WHATSAPP_API_URL, {
               method: 'POST',
               headers: {
                   'Authorization': 'Bearer ${ACCESS_TOKEN}',
