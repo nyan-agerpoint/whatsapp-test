@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 const verifyToken = process.env.VERIFY_TOKEN;
 
 const WHATSAPP_API_URL = 'https://graph.facebook.com/v22.0/759822520538727/messages';
-const ACCESS_TOKEN = ‘EAAHgZCGiJQbkBPLVD2iRXWOdsaEeaQZCqwSuZCYveEEVTtSVcPvMAZAmzgyuImxUasaCWKpHm920k5yaOOZBUt3IJy37V352xViFgWUiVWfZA6ZAMutBUTW3aevLhcmZCSUjobd406RagS8ZBNFj2P5P3sEgVs3WGBbm2ZC0X9TSzP7sLJmY1cmUt6diiz3UcRT5H2oBaYPYMg5f7i6tX2btWzWWVlhH6zfGr7Gk4CZAOh5UuDk’;
+const ACCESS_TOKEN = 'EAAHgZCGiJQbkBPLVD2iRXWOdsaEeaQZCqwSuZCYveEEVTtSVcPvMAZAmzgyuImxUasaCWKpHm920k5yaOOZBUt3IJy37V352xViFgWUiVWfZA6ZAMutBUTW3aevLhcmZCSUjobd406RagS8ZBNFj2P5P3sEgVs3WGBbm2ZC0X9TSzP7sLJmY1cmUt6diiz3UcRT5H2oBaYPYMg5f7i6tX2btWzWWVlhH6zfGr7Gk4CZAOh5UuDk';
 
 // Route for GET requests
 app.get('/', (req, res) => {
