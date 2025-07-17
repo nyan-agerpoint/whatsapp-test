@@ -39,7 +39,7 @@ app.post('/', (req, res) => {
       const senderId = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from || 'unknown';
 
       if (senderId && message) {
-        console.log('Received WhatsApp message from ${senderId}: ${message}');
+        console.log(`Received WhatsApp message from ${senderId}: ${message}`);
 
         // Respond with a simple echo reply (you can replace this logic with AI or database lookup)
         const payload = {
@@ -47,7 +47,7 @@ app.post('/', (req, res) => {
             to: senderId,
             type: 'text',
             text: {
-                body: 'You said: ${message}',
+                body: `You said: ${message}`,
             },
       };
 
@@ -55,7 +55,7 @@ app.post('/', (req, res) => {
           const response = fetch(WHATSAPP_API_URL, {
               method: 'POST',
               headers: {
-                  'Authorization': 'Bearer ${ACCESS_TOKEN}',
+                  'Authorization': `Bearer ${ACCESS_TOKEN}`,
                   'Content-Type': 'application/json',
               },
               body: JSON.stringify(payload),
@@ -82,6 +82,6 @@ app.post('/', (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log('\nListening on port ${port}\n');
+  console.log(`\nListening on port ${port}\n`);
 });
 
