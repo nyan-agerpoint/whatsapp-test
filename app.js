@@ -1,5 +1,3 @@
-
-
 // Import Express.js
 const express = require('express');
 
@@ -25,37 +23,15 @@ app.get('/', (req, res) => {
   }
 });
 
-// Handle incoming messages
+// Route for POST requests
 app.post('/', (req, res) => {
-  const body = req.body;
   const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
   console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
-
-  const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.text?.body;
-    if (message) {
-        const senderId = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from || 'unknown';
-
-        console.log(`Received message from ${senderId}: ${message}`);
-
-        // Respond with a simple echo reply (you can replace this logic with AI or database lookup)
-        const reply = {
-            recipientId: senderId,
-            reply: `You said: ${message}`,
-        };
-
-        console.log('Sending reply:', reply);
-
-        // In real applications, you would send the reply to the platform's API
-        res.status(200).json(reply);
-        res.status(200).end();
-    } else {
-        res.sendStatus(400);
-    }
+  res.status(200).end();
 });
 
 // Start the server
 app.listen(port, () => {
   console.log(`\nListening on port ${port}\n`);
 });
-
