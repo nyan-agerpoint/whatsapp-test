@@ -31,26 +31,50 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
   const body = req.body;
   const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
-  console.log(`\n\nWebhook received ${timestamp}\n`);
+  console.log('\n\nWebhook received ${timestamp}\n');
   console.log(JSON.stringify(req.body, null, 2));
 
   const message = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.text?.body;
   if (message) {
       const senderId = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from || 'unknown';
 
-      console.log(`Received message from ${senderId}: ${message}`);
+      console.log('Sending reply:', reply);
+      if (senderId && message) {
+        console.log('Received WhatsApp message from ${senderId}: ${message}');
 
-      // Respond with a simple echo reply (you can replace this logic with AI or database lookup)
-      const reply = {
-          recipientId: senderId,
-          reply: `You said: ${message}`,
+        // Respond with a simple echo reply (you can replace this logic with AI or database lookup)
+        const payload = {
+            messaging_product: 'whatsapp',
+            to: senderId,
+            type: 'text',
+            text: {
+                body: 'You said: ${message}',
+            },
       };
 
-      console.log('Sending reply:', reply);
+      try {
+          const response = await fetch(WHATSAPP_API_URL, {
+              method: 'POST',
+              headers: {
+                  'Authorization': 'Bearer ${ACCESS_TOKEN}',
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload),
+          });
 
-      // In real applications, you would send the reply to the platform's API
-      res.status(200).json(reply);
-      res.status(200).end();
+          const data = await response.json();
+
+          if (!response.ok) {
+              console.error('Error sending message:', data);
+              return res.sendStatus(500);
+          }
+
+          console.log('Message sent:', data);
+          res.sendStatus(200);
+      } catch (err) {
+          console.error('Fetch error:', err);
+          res.sendStatus(500);
+      }
   } else {
       res.sendStatus(400);
   }
@@ -58,6 +82,6 @@ app.post('/', (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`\nListening on port ${port}\n`);
+  console.log('\nListening on port ${port}\n');
 });
 
