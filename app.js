@@ -11,7 +11,7 @@ app.use(express.json());
 const port = process.env.PORT || 3000;
 const verifyToken = process.env.VERIFY_TOKEN;
 
-const WHATSAPP_API_URL = 'https://graph.facebook.com/v22.0/759822520538727/messages';
+const WHATSAPP_API_URL = 'https://graph.facebook.com/v22.0/760721917113358/messages';
 const ACCESS_TOKEN = 'EAAHgZCGiJQbkBPC33rVoqoLB3RtodIdTQI4zzik3XFUDFX2zzCZBOZBZAc3moQAyLr0KRNx3ZB1JXQJqVnxVR5x3ZBBmbnVYmz9iBwYFucZBPzaQcWSeJjckP7oZBkMlkhNfV6eyfT9ZAaKsZBEY56EemgAVeSlObJqbfVLnglsc3mmg2buSCuhzSGKO2C0a1KWg9ChYdUlpY0GHZAX8PjliZCEHWCQbZBCoabj6CXZAC0lHKLrSMZD';
 
 // Route for GET requests
